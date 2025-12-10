@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
+const xlsx = require('xlsx');
 const BloodCamp = require('../models/BloodCamp');
 const BloodBank = require('../models/BloodBank');
+const User = require('../models/User');
 const auth = require('../middleware/auth');
 
 // Middleware to protect blood bank routes
@@ -243,6 +245,70 @@ router.post('/:id/register', auth, async (req, res) => {
     
     res.json({ message: 'Successfully registered for blood camp' });
   } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// @route   GET /api/blood-camps/:id/export-registrations
+// @desc    Export registered users for a blood camp to Excel
+// @access  Private (Blood Bank - owner only)
+router.get('/:id/export-registrations', protectBloodBank, async (req, res) => {
+  try {
+    const camp = await BloodCamp.findById(req.params.id)
+      .populate('registeredUsers', 'name email phone bloodGroup city state age gender address')
+      .lean();
+    
+    if (!camp) {
+      return res.status(404).json({ message: 'Blood camp not found' });
+    }
+    
+    if (camp.organizer.toString() !== req.bloodBank._id.toString()) {
+      return res.status(403).json({ message: 'Not authorized to export this camp\'s data' });
+    }
+    
+    if (!camp.registeredUsers || camp.registeredUsers.length === 0) {
+      return res.status(400).json({ message: 'No registered users to export' });
+    }
+    
+    const data = camp.registeredUsers.map((user, index) => ({
+      'S.No': index + 1,
+      'Name': user.name || 'N/A',
+      'Email': user.email || 'N/A',
+      'Phone': user.phone || 'N/A',
+      'Blood Group': user.bloodGroup || 'N/A',
+      'Age': user.age || 'N/A',
+      'Gender': user.gender || 'N/A',
+      'City': user.city || 'N/A',
+      'State': user.state || 'N/A',
+      'Address': user.address || 'N/A',
+    }));
+
+    const worksheet = xlsx.utils.json_to_sheet(data);
+    const workbook = xlsx.utils.book_new();
+    xlsx.utils.book_append_sheet(workbook, worksheet, 'Registrations');
+
+    // Add camp info sheet
+    const campInfo = [{
+      'Camp Name': camp.name,
+      'Date': new Date(camp.date).toLocaleDateString(),
+      'Time': camp.time,
+      'Location': camp.location,
+      'Total Registrations': camp.registeredUsers.length,
+      'Expected Donors': camp.expectedDonors,
+      'Blood Collected': camp.collectedUnits || 0,
+      'Status': camp.status,
+    }];
+    const infoSheet = xlsx.utils.json_to_sheet(campInfo);
+    xlsx.utils.book_append_sheet(workbook, infoSheet, 'Camp Info');
+
+    const buffer = xlsx.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+
+    const filename = `${camp.name.replace(/[^a-z0-9]/gi, '_')}_registrations.xlsx`;
+    res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.send(buffer);
+  } catch (error) {
+    console.error('Error exporting registrations:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });

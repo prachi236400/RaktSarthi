@@ -27,10 +27,11 @@ app.use('/api/blood-camps', require('./routes/bloodCamps'));
 app.use('/api/donor-health', require('./routes/donorHealth'));
 app.use('/api/requests', require('./routes/requests'));
 app.use('/api/events', require('./routes/events'));
+app.use('/api/admin', require('./routes/admin')); // Admin routes for Excel export
 
 // Health check
 app.get('/', (req, res) => {
-  res.json({ message: 'RTBMS API is running' });
+  res.json({ message: 'RaktSarthi API is running' });
 });
 
 // Error handling middleware

@@ -85,42 +85,53 @@ router.put('/:id', auth, async (req, res) => {
 });
 
 // @route   PATCH /api/requests/:id/status
-// @desc    Update blood request status (cancel request)
-// @access  Private
-router.patch('/:id/status', auth, async (req, res) => {
+// @desc    Update blood request status (for users to cancel OR blood banks to approve/decline)
+// @access  Private (User or Blood Bank)
+router.patch('/:id/status', async (req, res) => {
   try {
-    console.log('Request cancellation attempt:', { requestId: req.params.id, userId: req.user.userId, status: req.body.status });
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+    
+    if (!token) {
+      return res.status(401).json({ message: 'No authentication token, access denied' });
+    }
+
+    const jwt = require('jsonwebtoken');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
     const { status } = req.body;
     
     const request = await BloodRequest.findById(req.params.id);
     if (!request) {
-      console.log('Request not found:', req.params.id);
       return res.status(404).json({ message: 'Request not found' });
     }
 
-    console.log('Request found:', { requestedBy: request.requestedBy.toString(), currentUser: req.user.userId });
-
-    // Verify the user owns this request
-    if (request.requestedBy.toString() !== req.user.userId) {
-      console.log('Authorization failed: User does not own this request');
+    // If blood bank, allow approve/decline
+    if (decoded.type === 'bloodbank') {
+      if (!['approved', 'declined'].includes(status)) {
+        return res.status(400).json({ message: 'Blood banks can only approve or decline requests' });
+      }
+      
+      request.status = status;
+      await request.save();
+      
+      return res.json({ message: `Request ${status} successfully`, request });
+    }
+    
+    // If user, verify ownership and allow cancellation
+    if (request.requestedBy.toString() !== decoded.userId) {
       return res.status(403).json({ message: 'Not authorized to modify this request' });
     }
 
-    // Only allow cancelling pending requests
     if (status === 'cancelled' && request.status !== 'pending') {
-      console.log('Cannot cancel non-pending request:', request.status);
       return res.status(400).json({ message: 'Only pending requests can be cancelled' });
     }
 
     request.status = status;
     await request.save();
-
-    console.log('Request status updated successfully:', request._id);
     
     res.json({ message: 'Request status updated successfully', request });
   } catch (error) {
-    console.error('Request cancellation error:', error);
+    console.error('Request status update error:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });

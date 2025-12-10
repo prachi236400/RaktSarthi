@@ -40,6 +40,10 @@ const BloodBankSchema = new mongoose.Schema({
     state: String,
     pincode: String
   },
+  profileImage: {
+    type: String,
+    default: ''
+  },
   location: {
     type: {
       type: String,

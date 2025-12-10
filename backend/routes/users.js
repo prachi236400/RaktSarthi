@@ -45,6 +45,30 @@ router.put('/profile', auth, async (req, res) => {
   }
 });
 
+// @route   PUT /api/users/donor-info
+// @desc    Update donor health information
+// @access  Private
+router.put('/donor-info', auth, async (req, res) => {
+  try {
+    const donorInfo = req.body;
+    
+    const user = await User.findByIdAndUpdate(
+      req.user.userId,
+      { $set: { donorInfo, isDonor: true } },
+      { new: true }
+    ).select('-password');
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({ message: 'Donor information saved successfully', user });
+  } catch (error) {
+    console.error('Error saving donor info:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
 // @route   GET /api/users/donors
 // @desc    Get available donors by blood group
 // @access  Private

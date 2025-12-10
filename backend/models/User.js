@@ -71,6 +71,52 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+  donorInfo: {
+    weight: Number,
+    height: Number,
+    dateOfBirth: Date,
+    gender: String,
+    lastDonationDate: Date,
+    donationCount: Number,
+    bloodPressure: String,
+    hemoglobinLevel: Number,
+    diseases: {
+      hiv: Boolean,
+      hepatitisB: Boolean,
+      hepatitisC: Boolean,
+      malaria: Boolean,
+      tuberculosis: Boolean,
+      heartDisease: Boolean,
+      diabetes: Boolean,
+      cancer: Boolean,
+      bloodDisorder: Boolean,
+      epilepsy: Boolean
+    },
+    recentConditions: {
+      fever: Boolean,
+      coldOrFlu: Boolean,
+      antibiotics: Boolean,
+      surgery: Boolean,
+      tattooOrPiercing: Boolean,
+      pregnancy: Boolean,
+      vaccination: Boolean
+    },
+    lifestyle: {
+      alcohol: String,
+      smoking: String,
+      drugUse: Boolean
+    },
+    emergencyContact: {
+      name: String,
+      phone: String,
+      relationship: String
+    },
+    consent: Boolean,
+    accuracyDeclaration: Boolean,
+    isEligible: Boolean,
+    eligibilityReasons: Object,
+    lastUpdated: Date
+  },
   createdAt: {
     type: Date,
     default: Date.now
