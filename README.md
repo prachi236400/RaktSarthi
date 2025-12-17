@@ -530,16 +530,18 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Team
 
-- **Project Lead**: Your Name
-- **Frontend Developer**: Your Name
-- **Backend Developer**: Your Name
-- **UI/UX Designer**: Your Name
+- **Project Lead**: Bhanu Partap
+- **Frontend Developer**: Bhanu / Tushar /  Prachi
+- **Backend Developer**: Prachi / Bhanu / Tushar
+- **UI/UX Designer**: Bhanu / Tushar
 
 ---
 
-## 📞 Support
+## 🧑‍💼 Contributions
 
-For support, email support@raktsarthi.com or join our Discord community.
+<a href="https://github.com/Bhanu-partap-13/RaktSarthi/graphs/contributors">
+  <img src="contrib.rocks" />
+</a>
 
 ---
 
