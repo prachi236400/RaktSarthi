@@ -5,13 +5,13 @@ import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBqRVJQwjEK0dfbGUEZxTzQ9VhUR7PIMCQ",
-  authDomain: "raktsarthi-b2387.firebaseapp.com",
-  projectId: "raktsarthi-b2387",
-  storageBucket: "raktsarthi-b2387.firebasestorage.app",
-  messagingSenderId: "55704085508",
-  appId: "1:55704085508:web:ed3ee3bd3bd7991fd20151",
-  measurementId: "G-DT6C43P876"
+  apiKey: "YOUR_API_KEY_HERE",
+  authDomain: "raktsarth.firebaseapp.com",
+  projectId: "raktsarthi",
+  storageBucket: "raktsarthi.firebasestorage.app",
+  messagingSenderId: "YOUR_ID_HERE",
+  appId: "YOUR_APP_ID_HERE",
+  measurementId: "YOUR_MEASUREMENT_ID_HERE"
 };
 
 // Initialize Firebase
