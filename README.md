@@ -540,9 +540,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🧑‍💼 Contributions
 
 <a href="https://github.com/Bhanu-partap-13/RaktSarthi/graphs/contributors">
-  <img src="contrib.rocks" />
+  <img src="https://contrib.rocks/image?repo=Bhanu-partap-13/RaktSarthi" />
 </a>
-
 ---
 
 ## 🙏 Acknowledgments
