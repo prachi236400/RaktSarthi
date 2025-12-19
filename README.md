@@ -563,8 +563,4 @@ Made with ❤️ and ☕ for a noble cause
 **Save Lives, Donate Blood** 🩸
 
 </div>
-<<<<<<< HEAD
 
-
-=======
->>>>>>> 423bcb4af01908f6cac29de8df9b5e72000d8b47
