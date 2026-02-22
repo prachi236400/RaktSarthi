@@ -41,8 +41,8 @@ export const AuthProvider = ({ children }) => {
         setUser(freshUser);
       }).catch(err => {
         console.error('Failed to fetch profile:', err);
-        // If token is invalid, clear auth state
-        if (err.response?.status === 401) {
+        // If token is invalid or user no longer exists, clear auth state and force re-login
+        if (err.response?.status === 401 || err.response?.status === 404) {
           localStorage.removeItem('token');
           localStorage.removeItem('user');
           setToken(null);
