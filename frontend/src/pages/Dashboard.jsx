@@ -117,18 +117,29 @@ const Dashboard = () => {
       return;
     }
 
-    // Default to patient if activeMode not set
-    const currentMode = user.activeMode || 'patient';
-    const newMode = currentMode === 'donor' ? 'patient' : 'donor';
-    
-    // If switching to donor and not registered yet, show modal
-    if (newMode === 'donor' && !user.isDonor) {
-      setShowDonorModal(true);
-      return;
-    }
-    
     try {
       setLoading(true);
+      
+      // Fetch fresh profile to ensure we have latest isDonor/activeMode
+      let currentUser = user;
+      try {
+        const profileRes = await userAPI.getProfile();
+        currentUser = { ...profileRes.data, id: profileRes.data._id || profileRes.data.id };
+        setUser(currentUser);
+      } catch (e) {
+        console.error('Error fetching profile before toggle:', e);
+      }
+
+      // Default to patient if activeMode not set
+      const currentMode = currentUser.activeMode || 'patient';
+      const newMode = currentMode === 'donor' ? 'patient' : 'donor';
+      
+      // If switching to donor and not registered yet, show modal
+      if (newMode === 'donor' && !currentUser.isDonor) {
+        setShowDonorModal(true);
+        setLoading(false);
+        return;
+      }
       const response = await userAPI.toggleMode(newMode);
       
       if (response.data.requiresRegistration) {
