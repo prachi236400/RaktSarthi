@@ -30,7 +30,7 @@
     "json2csv": "^6.0.0-alpha.2",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^7.0.0",
-    "mongoose": "^8.20.2"
+    "mongoose": "^8.23.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"

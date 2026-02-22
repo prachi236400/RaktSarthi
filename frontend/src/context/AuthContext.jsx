@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { authAPI } from '../services/api';
+import { authAPI, userAPI } from '../services/api';
 import { signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../config/firebase';
 
@@ -30,12 +30,30 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (token) {
+      // Load cached user immediately for fast render
       const userData = localStorage.getItem('user');
       if (userData) {
         setUserState(JSON.parse(userData));
       }
+      // Then fetch fresh profile from server
+      userAPI.getProfile().then(res => {
+        const freshUser = { ...res.data, id: res.data._id || res.data.id };
+        setUser(freshUser);
+      }).catch(err => {
+        console.error('Failed to fetch profile:', err);
+        // If token is invalid, clear auth state
+        if (err.response?.status === 401) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          setToken(null);
+          setUserState(null);
+        }
+      }).finally(() => {
+        setLoading(false);
+      });
+    } else {
+      setLoading(false);
     }
-    setLoading(false);
   }, [token]);
 
   const login = async (credentials) => {

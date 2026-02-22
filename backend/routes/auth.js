@@ -62,9 +62,14 @@ router.post('/register', [
         id: user._id,
         name: user.name,
         email: user.email,
+        phone: user.phone,
         bloodGroup: user.bloodGroup,
         role: user.role,
-        isDonor: user.isDonor
+        isDonor: user.isDonor,
+        needsBlood: user.needsBlood,
+        activeMode: user.activeMode || 'patient',
+        isAvailable: user.isAvailable,
+        address: user.address
       }
     });
   } catch (error) {
@@ -116,9 +121,15 @@ router.post('/login', [
         id: user._id,
         name: user.name,
         email: user.email,
+        phone: user.phone,
         bloodGroup: user.bloodGroup,
         role: user.role,
-        isDonor: user.isDonor
+        isDonor: user.isDonor,
+        needsBlood: user.needsBlood,
+        activeMode: user.activeMode || 'patient',
+        isAvailable: user.isAvailable,
+        address: user.address,
+        donorInfo: user.donorInfo
       }
     });
   } catch (error) {
@@ -184,9 +195,14 @@ router.post('/google', async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        phone: user.phone,
         bloodGroup: user.bloodGroup,
         role: user.role,
         isDonor: user.isDonor,
+        needsBlood: user.needsBlood,
+        activeMode: user.activeMode || 'patient',
+        isAvailable: user.isAvailable,
+        address: user.address,
         photoURL: user.photoURL
       }
     });
